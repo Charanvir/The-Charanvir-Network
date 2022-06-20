@@ -14,10 +14,16 @@ const userController = {
     // get one User by ID
     getUserById({ params }, res) {
         User.findOne({ _id: params.id })
-            .populate({
-                path: 'thoughts',
-                select: '-__v'
-            })
+            .populate([
+                {
+                    path: 'thoughts',
+                    select: '-__v'
+                },
+                {
+                    path: 'friends',
+                    select: '-__v'
+                }]
+            )
             .select('-__v')
             .then(dbUserData => {
                 if (!dbUserData) {
@@ -67,6 +73,46 @@ const userController = {
                 res.json(dbUserData)
             })
             .catch(err => res.status(400).json(err))
+    },
+
+    // add a friend to User's friendList
+    addFriend({ params }, res) {
+        User.findOneAndUpdate(
+            { _id: params.id },
+            { $push: { friends: params.friendId } },
+            { new: true, runValidators: true }
+        )
+            .then(dbUserData => {
+                if (!dbUserData) {
+                    res.status(404).json({ message: "No user found with this ID" });
+                    return;
+                }
+                res.json(dbUserData)
+            })
+            .catch(err => {
+                console.log(err)
+                res.json(err)
+            })
+    },
+
+    // remove a friend from a User's friendList
+    removeFriend({ params }, res) {
+        User.findOneAndUpdate(
+            { _id: params.id },
+            { $pull: { friends: params.friendId } },
+            { new: true, runValidators: true }
+        )
+            .then(dbUserData => {
+                if (!dbUserData) {
+                    res.status(404).json({ message: "No user found with this ID" });
+                    return;
+                }
+                res.json(dbUserData)
+            })
+            .catch(err => {
+                console.log(err)
+                res.json(err)
+            })
     }
 }
 
