@@ -1,7 +1,7 @@
 const { User, Thought } = require("../models")
 
 const thoughtController = {
-    // view a thought
+    // view all thoughts
     getAllThoughts(req, res) {
         Thought.find({})
             .select("-__v")
