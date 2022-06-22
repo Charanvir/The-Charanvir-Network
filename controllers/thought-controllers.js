@@ -36,6 +36,7 @@ const thoughtController = {
     },
 
     // add a thought
+    // By finding the ID of the user first, the thought being created is assigned to the User that has created it, much like a real social media platform
     addThought({ params, body }, res) {
         User.findOne({ _id: params.userId })
             .then(userData => {

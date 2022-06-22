@@ -11,19 +11,19 @@ const UserSchema = new Schema({
         type: String,
         required: "You must provide an email!",
         unique: true,
+        // regex statement used to match a valid email upon user creation
         match: [/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/, 'Please provide a valud email!']
     },
+    // references the thought model to be added to the associated user
     thoughts: [{
-        // array of _id values referencing the Thought model
         type: Schema.Types.ObjectId,
         ref: 'Thought'
     }],
+    // a self reference to add users to another users friend list
     friends: [{
         type: Schema.Types.ObjectId,
         ref: "User"
     }]
-    // array of _id values referncing the User model (self-reference)
-
 },
     {
         toJSON: {
